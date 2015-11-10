@@ -1,0 +1,33 @@
+CREATE OR REPLACE PROCEDURE P_GCS_PWD_RESET
+------------------------------------------------------------------------------
+  --SYSTEM   存储过程
+  --NAME       P_GCS_PWD_RESET
+  --DESC      
+  --DATE      2015-10-30
+  --AUTHOR    LEIYT
+  --VERSION   V1.0
+  ------------------------------------------------------------------------------
+(PI_RES_NO    IN VARCHAR2, --资源号
+ PI_LOGIN_PWD IN VARCHAR2 --密码
+ -- PO_RETCOD        OUT VARCHAR2   --返回标志
+ ) IS
+  VE_EXCEPTION EXCEPTION;
+BEGIN
+
+  update t_gcs_p_login_info t
+     set t.passwd     =
+         (select f_java_codeutil_md5hex(PI_RES_NO, PI_LOGIN_PWD) from dual),
+         t.err_counts  = 0,
+         t.lock_status = 'N'
+   WHERE t.cust_id = (select p.cust_id
+                        from t_gcs_p_base_info p
+                       where p.res_no = PI_RES_NO);
+  COMMIT;
+  -- PO_RETCOD:='0000';
+  dbms_output.put_line('执行成功');
+EXCEPTION
+  WHEN VE_EXCEPTION THEN
+    ROLLBACK;
+  WHEN OTHERS THEN
+    ROLLBACK;
+END P_GCS_PWD_RESET;
