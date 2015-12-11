@@ -1,0 +1,69 @@
+df -hl   查询磁盘空间  
+
+使用 mybatis-generator-core.jar 插件生成实体类和Dao文件
+
+1.准备 jar 包
+
+通过MAVEN 下载到mybatis-generator-core.jar 插件
+<dependency>
+  <groupId>org.mybatis.generator</groupId>
+  <artifactId>mybatis-generator-core</artifactId>
+  <version>1.3.2</version>
+</dependency>
+
+并准备 数据库连接包，如 mysql-connector-java-5.1.31.jar
+<dependency>
+  <groupId>mysql</groupId>
+  <artifactId>mysql-connector-java</artifactId>
+  <version>5.1.31</version>
+</dependency>
+
+2.在 mybatis-generator-core.jar  同级目录下创建 generatorConfig.xml 文件，并进行配置
+
+编辑generator.xml文件，内容如下：
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+	<!-- 数据库驱动包位置 -->
+	<!--<classPathEntry location="D:\Work\Maven\repo\m2\mysql\mysql-connector-java\5.1.34\mysql-connector-java-5.1.34.jar"/> -->
+	<classPathEntry location="G:\Maven\m2\repository\mysql\mysql-connector-java\5.1.31\mysql-connector-java-5.1.31.jar" /><!--驱动包文件可根据你的需求放置目录，亲测，有效。。。 -->
+
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+		</commentGenerator>
+
+		<!-- 数据库链接URL、用户名、密码 -->
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/demo" userId="root" password="******">
+		</jdbcConnection>
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<!-- 生成模型的包名和位置 -->
+		<javaModelGenerator targetPackage="com.lyt.model" targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+		<!-- 生成的映射文件包名和位置 -->
+		<sqlMapGenerator targetPackage="mapping" targetProject="src/main/resources">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+		<!-- 生成DAO的包名和位置 -->
+		<javaClientGenerator type="XMLMAPPER" targetPackage="com.lyt.mapper" targetProject="src/main/java">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+		<!-- 要生成那些表(更改tableName和domainObjectName就可以) -->
+		<table tableName="users" domainObjectName="UsersModel" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false"
+			selectByExampleQueryId="false" />
+	</context>
+</generatorConfiguration>
+
+3.打开命令行窗口，切换到生成工具的根目录下，执行如下命令：
+java -jar mybatis-generator-core-1.3.2.jar -configfile generator.xml -overwrite
+
+
