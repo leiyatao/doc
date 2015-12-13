@@ -1,0 +1,59 @@
+linux 查找文件
+find / -name 'nginx*'
+
+一、操作系统
+CentOS release 6.5 (Final)
+二、下载Nginx
+在官网：http://nginx.org/en/linux_packages.html#stable下载CentOS 6对应的RPM。
+我下载的是nginx-release-centos-6-0.el6.ngx.noarch.rpm。
+
+三、安装RPM
+[html] view plaincopy
+rpm -ivh nginx-release-centos-6-0.el6.ngx.noarch.rpm  
+
+四、运行下面命令
+[html] view plaincopy
+yum install nginx  
+
+五、查看Nginx版本及配置参数
+[html] view plaincopy
+nginx -V  
+六、注意事项
+通过第五步操作，你可能已经看到Nginx配置文件存放位置：--conf-path=/etc/nginx/nginx.conf
+用下面命令打开此文件：
+[html] view plaincopy
+vi /etc/nginx/nginx.conf  
+
+[html] view plaincopy
+user  nginx;  
+worker_processes  1;  
+  
+error_log  /var/log/nginx/error.log warn;  
+pid        /var/run/nginx.pid;  
+  
+  
+events {  
+    worker_connections  1024;  
+}  
+  
+  
+http {  
+    include       /etc/nginx/mime.types;  
+    default_type  application/octet-stream;  
+  
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '  
+                      '$status $body_bytes_sent "$http_referer" '  
+                      '"$http_user_agent" "$http_x_forwarded_for"';  
+  
+    access_log  /var/log/nginx/access.log  main;  
+  
+    sendfile        on;  
+    #tcp_nopush     on;  
+  
+    keepalive_timeout  65;  
+  
+    #gzip  on;  
+  
+    include /etc/nginx/conf.d/*.conf;  
+}  
+注意最后一行。
